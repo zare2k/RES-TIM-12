@@ -15,5 +15,4 @@ if __name__ == "__main__":
         odgovor = input("Meni: \n1 - Unos potrosnje vode\n2 - Izlaz\n")
 
         if int(odgovor) == 2:
-            break
-        
+            break        
