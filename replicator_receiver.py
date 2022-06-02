@@ -15,8 +15,15 @@ if __name__ == "__main__":
     
     soket = konekcija()
     
+    lista = list()
+    redni_broj = 0
+    
     while True:
         podaci = pickle.loads(soket.recv(4096))
+        
+        lista.append((podaci, redni_broj))
+        redni_broj += 1
+        
         print("Podaci stigli od klijenta: ")
         print("ID brojila: ", podaci.idBrojila)
         print("Potrosnja vode: ", podaci.potrosnjaVode)
