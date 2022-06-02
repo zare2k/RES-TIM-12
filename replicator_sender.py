@@ -23,7 +23,7 @@ def slanje_receiver(klijent, id, potrosnja):
 if __name__ == "__main__":
     
     soket = konekcija()
-    #klijent = konekcija_receiver()
+    klijent = konekcija_receiver()
     
     while True:
         podaci = pickle.loads(soket.recv(4096))
@@ -31,5 +31,5 @@ if __name__ == "__main__":
         print("ID brojila: ", podaci.idBrojila)
         print("Potrosnja vode: ", podaci.potrosnjaVode)
         
-        #slanje_receiver(klijent, podaci.idBrojila, podaci.potrosnjaVode)
+        slanje_receiver(klijent, podaci.idBrojila, podaci.potrosnjaVode)
         
