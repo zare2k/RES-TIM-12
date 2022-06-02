@@ -16,9 +16,9 @@ def konekcija_receiver():
     klijent.connect((socket.gethostname(), 8082))
     return klijent
     
-def slanje_receiver(klijent, id, potrosnja):
-    podaci = pickle.dumps(podatak.Podatak(id, potrosnja))
-    klijent.send(podaci)
+def slanje_receiver(klijent, podaci):
+    podaci_bytes = pickle.dumps(podaci)
+    klijent.send(podaci_bytes)
 
 if __name__ == "__main__":
     
@@ -28,8 +28,8 @@ if __name__ == "__main__":
     while True:
         podaci = pickle.loads(soket.recv(4096))
         print("Podaci stigli od klijenta: ")
-        print("ID brojila: ", podaci.idBrojila)
-        print("Potrosnja vode: ", podaci.potrosnjaVode)
+        print("ID brojila: ", podaci.id_brojila)
+        print("Potrosnja vode: ", podaci.potrosnja_vode)
         
-        slanje_receiver(klijent, podaci.idBrojila, podaci.potrosnjaVode)
+        slanje_receiver(klijent, podaci)
         
