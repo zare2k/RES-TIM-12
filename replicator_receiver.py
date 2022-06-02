@@ -16,6 +16,10 @@ def konekcija_reader():
     receiver.connect((socket.gethostname(), 8083))
     return receiver
 
+def slanje_reader(receiver, id, potrosnja):
+    podaci = pickle.dumps(podatak.Podatak(id, potrosnja))
+    receiver.send(podaci)
+
 if __name__ == "__main__":
     
     soket = konekcija()
@@ -33,3 +37,5 @@ if __name__ == "__main__":
         print("Podaci stigli od klijenta: ")
         print("ID brojila: ", podaci.idBrojila)
         print("Potrosnja vode: ", podaci.potrosnjaVode)
+        
+        slanje_reader(receiver, podaci.idBrojila, podaci.potrosnjaVode)
