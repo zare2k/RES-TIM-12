@@ -1,4 +1,6 @@
 import socket
+import pickle
+import podatak
         
 def konekcija():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -13,3 +15,8 @@ if __name__ == "__main__":
     
     soket = konekcija()
     
+    while True:
+        podaci = pickle.loads(soket.recv(4096))
+        print("Podaci stigli od klijenta: ")
+        print("ID brojila: ", podaci.idBrojila)
+        print("Potrosnja vode: ", podaci.potrosnjaVode)
