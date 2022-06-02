@@ -16,9 +16,9 @@ def konekcija_reader():
     receiver.connect((socket.gethostname(), 8083))
     return receiver
 
-def slanje_reader(receiver, id, potrosnja):
-    podaci = pickle.dumps(podatak.Podatak(id, potrosnja))
-    receiver.send(podaci)
+def slanje_reader(receiver, podaci):
+    podaci_bytes = pickle.dumps(podaci)
+    receiver.send(podaci_bytes)
 
 if __name__ == "__main__":
     
@@ -30,12 +30,14 @@ if __name__ == "__main__":
     
     while True:
         podaci = pickle.loads(soket.recv(4096))
-        
-        lista.append((podaci, redni_broj))
+        podaci.redni_broj = redni_broj
         redni_broj += 1
-        
+
+        lista.append(podaci)
+
         print("Podaci stigli od klijenta: ")
-        print("ID brojila: ", podaci.idBrojila)
-        print("Potrosnja vode: ", podaci.potrosnjaVode)
+        print("ID brojila: ", podaci.id_brojila)
+        print("Potrosnja vode: ", podaci.potrosnja_vode)
         
-        slanje_reader(receiver, podaci.idBrojila, podaci.potrosnjaVode)
+        slanje_reader(receiver, podaci)
+
