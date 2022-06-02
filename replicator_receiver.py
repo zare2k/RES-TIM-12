@@ -11,9 +11,15 @@ def konekcija():
     print("Konektovan klijent sa adrese: ", adresa)
     return soket
 
+def konekcija_reader():
+    receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    receiver.connect((socket.gethostname(), 8083))
+    return receiver
+
 if __name__ == "__main__":
     
     soket = konekcija()
+    receiver = konekcija_reader()
     
     lista = list()
     redni_broj = 0
