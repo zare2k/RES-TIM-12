@@ -1,7 +1,9 @@
+import imp
 import socket
 import pickle
 import podatak
 import database_functions
+import random
 
 def konekcija():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -23,4 +25,7 @@ if __name__ == "__main__":
         print("Podaci stigli od klijenta: ")
         print("ID brojila: ", podaci.id_brojila)
         print("Potrosnja vode: ", podaci.potrosnja_vode)
-        #database_functions.dodaj_element(podaci.id_brojila, podaci.potrosnja_vode, baza)
+        
+        niz = ['Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun', 'Jul', 'Avgust', 'Septembar', 'Oktobar', 'Novembar', 'Decembar']
+        mesec = random.choice(niz)
+        database_functions.dodaj_element(podaci.id_brojila, podaci.potrosnja_vode, mesec, baza)

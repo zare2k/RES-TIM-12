@@ -12,7 +12,7 @@ def konekcija():
         
     return baza
         
-def dodaj_element(id_brojila, potrosnja_vode, baza):
+def dodaj_element(id_brojila, potrosnja_vode, mesec, baza):
     myCursor = baza.cursor()
-    myCursor.execute("INSERT INTO baza_podataka (id, potrosnja) VALUES (%s, %s)", (id_brojila, potrosnja_vode))
+    myCursor.execute("INSERT INTO potrosnja_brojila (id, potrosnja, mesec) VALUES (%s, %s, %s)", (id_brojila, potrosnja_vode, mesec))
     baza.commit()
