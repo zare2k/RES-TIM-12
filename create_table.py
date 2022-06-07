@@ -15,5 +15,10 @@ myCursor.execute("INSERT INTO brojilo (id, ime, prezime, ulica, broj_ulice, post
 myCursor.execute("INSERT INTO brojilo (id, ime, prezime, ulica, broj_ulice, postanski_broj, grad) VALUES ('7', 'Stefan', 'Micic', 'Ruzveltova', '76', '35000', 'Jagodina')")
 myCursor.execute("INSERT INTO brojilo (id, ime, prezime, ulica, broj_ulice, postanski_broj, grad) VALUES ('8', 'Maksim', 'Lazic', 'Dositejeva', '90', '18000', 'Nis')")
 myCursor.execute("INSERT INTO brojilo (id, ime, prezime, ulica, broj_ulice, postanski_broj, grad) VALUES ('9', 'Milica', 'Pijunovic', 'Zanatlijska', '3', '22400', 'Ruma')")
-myCursor.execute("INSERT INTO brojilo (id, ime, prezime, ulica, broj_ulice, postanski_broj, grad) VALUES ('10', 'Iskra', 'Mihajlovic', 'Norveska', '14', '24000', 'Subotica')") 
+myCursor.execute("INSERT INTO brojilo (id, ime, prezime, ulica, broj_ulice, postanski_broj, grad) VALUES ('10', 'Iskra', 'Mihajlovic', 'Norveska', '14', '24000', 'Subotica')")
+myCursor.execute("INSERT INTO brojilo (id, ime, prezime, ulica, broj_ulice, postanski_broj, grad) VALUES ('11', 'Ognjen', 'Dobric', 'Kosovska', '74', '21000', 'Novi Sad')")
+myCursor.execute("INSERT INTO brojilo (id, ime, prezime, ulica, broj_ulice, postanski_broj, grad) VALUES ('12', 'Dejan', 'Davidovac', 'Kosovska', '32', '21000', 'Novi Sad')")
+myCursor.execute("INSERT INTO brojilo (id, ime, prezime, ulica, broj_ulice, postanski_broj, grad) VALUES ('13', 'Jovana', 'Gligoric', 'Nemanjina', '13', '11000', 'Beograd')")
+myCursor.execute("INSERT INTO brojilo (id, ime, prezime, ulica, broj_ulice, postanski_broj, grad) VALUES ('14', 'Teodora', 'Vasic', 'Nemanjina', '1', '11000', 'Beograd')")
+
 baza.commit()
