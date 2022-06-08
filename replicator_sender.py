@@ -1,15 +1,26 @@
 import socket
 import pickle
-import podatak
+from _thread import *
+
+def visestruka_konekcija(konekcija, klijent):
+    while True:
+        data = konekcija.recv(4096)
+        if not data:
+            break
+        podaci = pickle.loads(data)
+        print("Podaci stigli od klijenta: ")
+        print("ID brojila: ", podaci.id_brojila)
+        print("Potrosnja vode: ", podaci.potrosnja_vode)
+        
+        slanje_receiver(klijent, podaci)
+    konekcija.close()
 
 def konekcija():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((socket.gethostname(), 8081))
     s.listen(5)
     print("Cekam konekciju...")
-    soket, adresa = s.accept()
-    print("Konektovan klijent sa adrese: ", adresa)
-    return soket
+    return s
 
 def konekcija_receiver():
     klijent = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -22,14 +33,12 @@ def slanje_receiver(klijent, podaci):
 
 if __name__ == "__main__":
     
-    soket = konekcija()
+    s = konekcija()
     klijent = konekcija_receiver()
     
     while True:
-        podaci = pickle.loads(soket.recv(4096))
-        print("Podaci stigli od klijenta: ")
-        print("ID brojila: ", podaci.id_brojila)
-        print("Potrosnja vode: ", podaci.potrosnja_vode)
+        soket, adresa = s.accept()
+        print("Konektovan klijent sa adrese: ", adresa)
         
-        slanje_receiver(klijent, podaci)
+        start_new_thread(visestruka_konekcija, (soket, klijent))
         
