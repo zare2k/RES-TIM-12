@@ -38,8 +38,9 @@ if __name__ == "__main__":
                 continue
 
         print("Podaci stigli od klijenta: ")
-        print("ID brojila: ", podaci.id_brojila)
-        print("Potrosnja vode: ", podaci.potrosnja_vode)
+        for i in range(len(podaci)):
+            print("ID brojila: ", podaci[i].id_brojila)
+            print("Potrosnja vode: ", podaci[i].potrosnja_vode)
         
         niz = ['Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun', 'Jul', 'Avgust', 'Septembar', 'Oktobar', 'Novembar', 'Decembar']
         mesec = random.choice(niz)
