@@ -1,6 +1,7 @@
 import socket
 import pickle
 import podatak
+import time
         
 def konekcija():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -16,8 +17,8 @@ def konekcija_reader():
     receiver.connect((socket.gethostname(), 8083))
     return receiver
 
-def slanje_reader(receiver, podaci):
-    podaci_bytes = pickle.dumps(podaci)
+def slanje_reader(receiver, lista):
+    podaci_bytes = pickle.dumps(lista)
     receiver.send(podaci_bytes)
 
 if __name__ == "__main__":
@@ -34,13 +35,11 @@ if __name__ == "__main__":
         exit(1)
     
     lista = list()
-    redni_broj = 0
-    
+    pocetak_prikupljanja = time.time()
+
     while True:
         try:
             podaci = pickle.loads(soket.recv(4096))
-            podaci.redni_broj = redni_broj
-            redni_broj += 1
             lista.append(podaci)
         except EOFError:
             odgovor = input("Ugasen klijent, da li zelite da ugasite server? (DA/NE)")
@@ -49,6 +48,7 @@ if __name__ == "__main__":
                 continue
             elif odgovor == "DA":
                 soket.close()
+                receiver.close()
                 break
             else:
                 print("Unesite DA ili NE")
@@ -57,9 +57,16 @@ if __name__ == "__main__":
         print("Podaci stigli od klijenta: ")
         print("ID brojila: ", podaci.id_brojila)
         print("Potrosnja vode: ", podaci.potrosnja_vode)
-        
-        try:
-            slanje_reader(receiver, podaci)
-        except socket.error:
-            print("Neuspesno slanje podataka reader komponenti.")
-            exit(1)
+
+        trenutno_vreme = time.time()
+        if (trenutno_vreme - pocetak_prikupljanja) >= 10:
+            try:
+                slanje_reader(receiver, lista)
+                lista.clear()
+                print("Duzina liste: ", str(len(lista)))
+                pocetak_prikupljanja = time.time()
+            except socket.error:
+                print("Neuspesno slanje podataka reader komponenti.")
+                soket.close()
+                receiver.close()
+                exit(1)
