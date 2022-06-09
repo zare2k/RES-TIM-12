@@ -20,7 +20,7 @@ if __name__ == "__main__":
         print("Greska u konekciji sa replikatorom.")
         exit(1)
 
-    #baza = database_functions.konekcija()
+    baza = database_functions.konekcija()
 
     while True:
         try:
@@ -44,4 +44,4 @@ if __name__ == "__main__":
         
         niz = ['Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun', 'Jul', 'Avgust', 'Septembar', 'Oktobar', 'Novembar', 'Decembar']
         mesec = random.choice(niz)
-        #database_functions.dodaj_element(podaci.id_brojila, podaci.potrosnja_vode, mesec, baza)
+        database_functions.dodaj_element(podaci.id_brojila, podaci.potrosnja_vode, mesec, baza)
