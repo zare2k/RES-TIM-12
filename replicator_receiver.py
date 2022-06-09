@@ -63,7 +63,6 @@ if __name__ == "__main__":
             try:
                 slanje_reader(receiver, lista)
                 lista.clear()
-                print("Duzina liste: ", str(len(lista)))
                 pocetak_prikupljanja = time.time()
             except socket.error:
                 print("Neuspesno slanje podataka reader komponenti.")
