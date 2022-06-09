@@ -13,18 +13,44 @@ def slanje(klijent, id, potrosnja):
 
 if __name__ == "__main__":
 
-    klijent = konekcija()
-
+    try:
+        klijent = konekcija()
+    except socket.error:
+        print("Greska u konekciji sa replikatorom.")
+        exit(1)
+    
     while True: 
 
         odgovor = input("Meni: \n1 - Unos potrosnje vode\n2 - Izlaz\n")
-
-        if int(odgovor) == 1:
-            id = input("Unesite ID brojila: ")
-            potrosnja = input("Unesite potrosnju vode: ")
-            slanje(klijent, id, potrosnja)
-
-        elif int(odgovor) == 2:
+        
+        try:
+            odgovor = int(odgovor)
+        except ValueError:
+            print("Unesite broj")
+            continue
+        
+        if odgovor == 1:
+            
+            try:
+                id = int(input("Unesite ID brojila: "))
+            except ValueError:
+                print("ID mora biti broj")
+                continue
+            
+            try:
+                potrosnja = int(input("Unesite potrosnju vode: "))
+            except ValueError:
+                print("Morate uneti broj")
+                continue
+            
+            try:
+                slanje(klijent, id, potrosnja)
+            except socket.error:
+                print("Neuspesno slanje podataka.")
+                klijent.close()
+                exit(1)
+                
+        elif odgovor == 2:
             klijent.close()
             break
         else:
