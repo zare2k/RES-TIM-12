@@ -60,6 +60,6 @@ if __name__ == "__main__":
         
         try:
             slanje_reader(receiver, podaci)
-        except EOFError:
+        except socket.error:
             print("Neuspesno slanje podataka reader komponenti.")
-            exit(2)
+            exit(1)
