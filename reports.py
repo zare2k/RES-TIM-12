@@ -14,6 +14,6 @@ def izvestaj_brojilo(brojilo):
     lista = list()
     lista.append(brojilo)
     myCursor = baza.cursor()
-    myCursor.execute("SELECT brojilo.id, sum(potrosnja_brojila.potrosnja), potrosnja_brojila.mesec FROM baza_podataka.potrosnja_brojila JOIN baza_podataka.brojilo WHERE brojilo.id = potrosnja_brojila.id AND brojilo.id = %s GROUP BY potrosnja_brojila.mesec;", lista)
+    myCursor.execute("SELECT brojilo.id, potrosnja_brojila.potrosnja, potrosnja_brojila.mesec FROM baza_podataka.potrosnja_brojila JOIN baza_podataka.brojilo WHERE brojilo.id = potrosnja_brojila.id AND brojilo.id = %s GROUP BY potrosnja_brojila.mesec;", lista)
     rezultat = myCursor.fetchall()
     return rezultat
