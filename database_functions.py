@@ -6,13 +6,10 @@ def konekcija():
         database = "baza_podataka",
         user = "root",
         password = "student")
-    
-    if baza.is_connected():
-        print('Uspesna konekcija na bazu podataka!')
         
     return baza
         
-def dodaj_element(id_brojila, potrosnja_vode, mesec, baza):
+def dodaj_element(id_brojila, potrosnja_vode, mesec, baza): 
     myCursor = baza.cursor()
     myCursor.execute("INSERT INTO potrosnja_brojila (id, potrosnja, mesec) VALUES (%s, %s, %s)", (id_brojila, potrosnja_vode, mesec))
     baza.commit()
