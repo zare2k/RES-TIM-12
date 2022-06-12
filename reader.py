@@ -21,7 +21,8 @@ if __name__ == "__main__":
         exit(1)
 
     baza = database_functions.konekcija()
-
+    niz_meseci = ['Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun', 'Jul', 'Avgust', 'Septembar', 'Oktobar', 'Novembar', 'Decembar']
+    
     while True:
         try:
             podaci = pickle.loads(soket.recv(4096))
@@ -38,9 +39,9 @@ if __name__ == "__main__":
                 continue
 
         print("Podaci stigli od klijenta: ")
-        print("ID brojila: ", podaci.id_brojila)
-        print("Potrosnja vode: ", podaci.potrosnja_vode)
-        
-        niz = ['Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun', 'Jul', 'Avgust', 'Septembar', 'Oktobar', 'Novembar', 'Decembar']
-        mesec = random.choice(niz)
-        database_functions.dodaj_element(podaci.id_brojila, podaci.potrosnja_vode, mesec, baza)
+        for i in range(len(podaci)):
+            print("ID brojila: ", podaci[i].id_brojila)
+            print("Potrosnja vode: ", podaci[i].potrosnja_vode)
+            mesec = random.choice(niz_meseci)
+            database_functions.dodaj_element(podaci[i].id_brojila, podaci[i].potrosnja_vode, mesec, baza)
+
