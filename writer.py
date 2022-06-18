@@ -55,7 +55,7 @@ def meni(odgovor):
 def unos(odgovor):
     try:
         odgovor = int(odgovor)
-        if odgovor <= 0:
+        if odgovor <= 0 or odgovor == None:
             raise NevalidanUnos()
         
         return odgovor
@@ -71,7 +71,7 @@ def main():
     klijent = konekcija()
         
     while True:
-        print("Meni: \n1 - Unos potrosnje vode\n2 - Izlaz\n")
+        print("Meni: \n1 - Unos potrosnje vode\n2 - Izlaz")
         
         odgovor = meni(input())
             
@@ -80,8 +80,12 @@ def main():
         if odgovor == 1:
             print("Unesite ID brojila: ")
             id = unos(input())
+            if id == None:
+                continue
             print("Unesite potrosnju vode: ")
             potrosnja = unos(input())
+            if potrosnja == None:
+                continue
             slanje(klijent, id, potrosnja)
             
         elif odgovor == 2:
@@ -90,3 +94,5 @@ def main():
             
 if __name__ == "__main__":
     main()
+
+
