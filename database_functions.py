@@ -21,7 +21,7 @@ def provera_id(id_brojila, baza):
     my_cursor = baza.cursor()
     lista = list()
     lista.append(id_brojila)
-    my_cursor.execute("SELECT * FROM baza_podataka.brojilo WHERE brojilo.id = %s", id_brojila)
+    my_cursor.execute("SELECT * FROM baza_podataka.brojilo WHERE brojilo.id = %s", lista)
     rezultat = my_cursor.fetchall()
     return rezultat
 
