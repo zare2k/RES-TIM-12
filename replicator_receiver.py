@@ -23,8 +23,7 @@ def konekcija_reader():
         return receiver
     except socket.error:
         print("Neuspesna konekcija sa reader-om")
-        exit()
-
+        return None
 def izvlacenje_podataka(line):
     podaci_string = str.encode(line)
     podaci_niz = []
@@ -41,12 +40,12 @@ def slanje_reader(receiver, soket):
             podaci = izvlacenje_podataka(line)
             podaci_bytes = pickle.dumps(podaci)
             receiver.send(podaci_bytes)
-    except socket.error:
+    except Exception:
         print("Neuspesno slanje podataka na reader")
+        file.close() 
         soket.close()
         receiver.close()
-        file.close() 
-        exit()
+        return "ERROR"
     file.close() 
 
 def primanje_podataka(soket, receiver):
@@ -68,12 +67,13 @@ def logovanje(podaci):
     file.write("\n")
     file.close() 
 
-def slanje_podataka(pocetak_prikupljanja, soket, receiver):
-    slanje_reader(receiver, soket)
+def slanje_podataka(soket, receiver):
+    if slanje_reader(receiver, soket) == "ERROR":
+        exit()
     brisanje_logova()
-    pocetak_prikupljanja = time.time()
+    pocetak_prikupljanja_novo = time.time()
 
-    return pocetak_prikupljanja
+    return pocetak_prikupljanja_novo
 
 def brisanje_logova():
     file = open("log.txt", "a") 
@@ -83,7 +83,7 @@ def brisanje_logova():
 def provera_proteklog_vremena(pocetak_prikupljanja, soket, receiver):
     trenutno_vreme = time.time()
     if (trenutno_vreme - pocetak_prikupljanja) >= 10:
-       pocetak_prikupljanja = slanje_podataka(pocetak_prikupljanja, soket, receiver)
+       pocetak_prikupljanja = slanje_podataka(soket, receiver)
 
     return pocetak_prikupljanja
 
@@ -102,6 +102,8 @@ def razmena_podataka(soket, receiver):
 def main():
     soket = konekcija()
     receiver = konekcija_reader()
+    if receiver == None:
+        return
     razmena_podataka(soket, receiver)
 
 if __name__ == "__main__":
