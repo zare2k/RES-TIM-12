@@ -24,6 +24,7 @@ def preuzimanje_podataka(soket):
     except EOFError:
         print("Ugasen replikator, gasenje readera.")
         soket.close()
+        return None
     except ConnectionResetError:
         return None
 
@@ -45,6 +46,8 @@ def main():
     niz_meseci = ['Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun', 'Jul', 'Avgust', 'Septembar', 'Oktobar', 'Novembar', 'Decembar']
     while True:
         podaci = preuzimanje_podataka(soket)
+        if podaci == None:
+            break
         print("Podaci stigli od klijenta: ")
         print("ID brojila: ", podaci.id_brojila)
         print("Potrosnja vode: ", podaci.potrosnja_vode)
