@@ -176,13 +176,9 @@ class TestIzvestaj(unittest.TestCase):
 class TestIzvestajUlica(unittest.TestCase):
     def test_izvestaj_ulica_ok(self):
         baza = database_functions.konekcija()
-        rezultat = [('Kosovska', Decimal('10'), 'Mart'),
-                    ('Kosovska', Decimal('120'), 'Septembar'),
-                    ('Kosovska', Decimal('30'), 'April'),
-                    ('Kosovska', Decimal('20'), 'Oktobar'),
-                    ('Kosovska', Decimal('30'), 'Januar'),
-                    ('Kosovska', Decimal('5'), 'Avgust')]
-        self.assertEqual(reports.izvestaj_ulica("Kosovska", baza), rezultat)
+        rezultat = [('Norveska', Decimal('50'), 'Decembar'),
+                    ('Norveska', Decimal('100'), 'Jun')]
+        self.assertEqual(reports.izvestaj_ulica("Norveska", baza), rezultat)
         
     def test_izvestaj_ulica_error(self):
         baza = database_functions.konekcija()
@@ -191,16 +187,13 @@ class TestIzvestajUlica(unittest.TestCase):
 class TestIzvestajBrojilo(unittest.TestCase):
     def test_izvestaj_brojilo_ok(self):
         baza = database_functions.konekcija()
-        rezultat = [(2, 10, 'Mart'),
-                    (2, 20, 'Oktobar'),
-                    (2, 30, 'Januar'),
-                    (2, 100, 'Septembar'),
-                    (2, 5, 'Avgust')]
-        self.assertEqual(reports.izvestaj_brojilo(2, baza), rezultat)
+        rezultat = [(10, 50, 'Decembar'),
+                    (10, 100, 'Jun')]
+        self.assertEqual(reports.izvestaj_brojilo(10, baza), rezultat)
         
     def test_izvestaj_brojilo_error(self):
         baza = database_functions.konekcija()
-        self.assertEqual(reports.izvestaj_brojilo(56, baza), [])
+        self.assertEqual(reports.izvestaj_brojilo(1056, baza), [])
         
 if __name__ == "__main__":
     unittest.main()
