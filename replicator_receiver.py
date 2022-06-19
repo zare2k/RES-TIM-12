@@ -4,68 +4,107 @@ import podatak
 import time
         
 def konekcija():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((socket.gethostname(), 8082))
-    s.listen(1)
-    print("Cekam konekciju...")
-    soket, adresa = s.accept()
-    print("Konektovan klijent sa adrese: ", adresa)
-    return soket
+    try:
+        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server.bind((socket.gethostname(), 8082))
+        server.listen(1)
+        print("Cekam konekciju...")
+        soket, adresa = server.accept()
+        print("Konektovan klijent sa adrese: ", adresa)
+        return soket
+    except socket.error:
+        print("Neuspesna konekcija sa replicator sender-om")
+        exit()
 
 def konekcija_reader():
-    receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    receiver.connect((socket.gethostname(), 8083))
-    return receiver
-
-def slanje_reader(receiver, lista):
-    podaci_bytes = pickle.dumps(lista)
-    receiver.send(podaci_bytes)
-
-if __name__ == "__main__":
-    
     try:
-        soket = konekcija()
+        receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        receiver.connect((socket.gethostname(), 8083))
+        return receiver
     except socket.error:
-        print("Greska u konekciji sa replikator senderom.")
-        exit(1)
+        print("Neuspesna konekcija sa reader-om")
+        return None
+def izvlacenje_podataka(line):
+    podaci_string = str.encode(line)
+    podaci_niz = []
+    for number in podaci_string.split():
+        if number.isdigit():
+            podaci_niz.append(int(number))
+    podaci = podatak.Podatak(podaci_niz[0], podaci_niz[1])   
+    return podaci
+
+def slanje_reader(receiver, soket):
     try:
-        receiver = konekcija_reader()
-    except socket.error:
-        print("Greska u konekciji sa reader-om.")
-        exit(1)
-    
-    lista = list()
+        file = open("log.txt", "r") 
+        for line in file:
+            podaci = izvlacenje_podataka(line)
+            podaci_bytes = pickle.dumps(podaci)
+            receiver.send(podaci_bytes)
+    except Exception:
+        print("Neuspesno slanje podataka na reader")
+        file.close() 
+        soket.close()
+        receiver.close()
+        return "ERROR"
+    file.close() 
+
+def primanje_podataka(soket, receiver):
+    try:
+        data = soket.recv(4096)
+        podaci = pickle.loads(data)
+        return podaci
+    except EOFError:
+        print("Gasenje replikator receivera.")
+        soket.close()
+        receiver.close()
+        exit()
+
+def logovanje(podaci):
+    file = open("log.txt", "a") 
+    file.write(str(podaci.id_brojila))
+    file.write(" ")
+    file.write(str(podaci.potrosnja_vode))
+    file.write("\n")
+    file.close() 
+
+def slanje_podataka(soket, receiver):
+    if slanje_reader(receiver, soket) == "ERROR":
+        exit()
+    brisanje_logova()
+    pocetak_prikupljanja_novo = time.time()
+
+    return pocetak_prikupljanja_novo
+
+def brisanje_logova():
+    file = open("log.txt", "a") 
+    file.truncate(0)
+    file.close() 
+
+def provera_proteklog_vremena(pocetak_prikupljanja, soket, receiver):
+    trenutno_vreme = time.time()
+    if (trenutno_vreme - pocetak_prikupljanja) >= 10:
+       pocetak_prikupljanja = slanje_podataka(soket, receiver)
+
+    return pocetak_prikupljanja
+
+def razmena_podataka(soket, receiver):
     pocetak_prikupljanja = time.time()
-
     while True:
-        try:
-            podaci = pickle.loads(soket.recv(4096))
-            lista.append(podaci)
-        except EOFError:
-            odgovor = input("Ugasen klijent, da li zelite da ugasite server? (DA/NE)")
-            if odgovor == "NE":
-                soket = konekcija()
-                continue
-            elif odgovor == "DA":
-                soket.close()
-                receiver.close()
-                break
-            else:
-                print("Unesite DA ili NE")
-                continue
-
+        podaci = primanje_podataka(soket, receiver)
+        logovanje(podaci)
+        
         print("Podaci stigli od klijenta: ")
         print("ID brojila: ", podaci.id_brojila)
         print("Potrosnja vode: ", podaci.potrosnja_vode)
 
-        trenutno_vreme = time.time()
-        if (trenutno_vreme - pocetak_prikupljanja) >= 10:
-            try:
-                slanje_reader(receiver, lista)
-                lista.clear()
-                pocetak_prikupljanja = time.time()
-            except socket.error:
-                print("Neuspesno slanje podataka reader komponenti.")
-                soket.close()
-                receiver.close()
-                exit(1)
+        pocetak_prikupljanja = provera_proteklog_vremena(pocetak_prikupljanja, soket, receiver)
+
+def main():
+    soket = konekcija()
+    receiver = konekcija_reader()
+    if receiver == None:
+        return
+    razmena_podataka(soket, receiver)
+
+if __name__ == "__main__":
+    main()
