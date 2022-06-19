@@ -12,7 +12,6 @@ class NevalidanUnos(Exception):
         return self.message
 
 def izvestaj_ulica(ulica, baza):
-    baza = database_functions.konekcija()
     lista = list()
     lista.append(ulica)
     my_cursor = baza.cursor() 
@@ -51,7 +50,9 @@ def izvestaj_ispis(rezultat):
                 
         print(tabulate(redovi, headers=head, tablefmt="grid"))
         
-def meni(odgovor):
+def meni():
+    print("Meni\n1 - Izvestaj mesecne postrosnje za ulicu\n2 - Izvestaj mesecne potrosnje za brojilo\n3 - Izlaz")
+    odgovor = input()
     
     try:
         odgovor = int(odgovor)
@@ -59,6 +60,7 @@ def meni(odgovor):
             raise NevalidanUnos("Unesite 1, 2 ili 3.")
         
         return odgovor
+
     except NevalidanUnos as e:
         print(e)
         return None
@@ -66,58 +68,78 @@ def meni(odgovor):
         print("Unesite broj.")
         return None
     
-def izvestaj(odgovor, baza):
+def unos_ulica():
+    ulica = input("Unesite ulicu: ")
+            
+    try:
+        if ulica.isdigit():
+            raise NevalidanUnos("Ulica mora biti string.")
+        
+        return ulica
+    except NevalidanUnos as e:
+        print(e)
+
+def unos_brojilo():
     
     try:
-        if odgovor == 1:
+        brojilo = int(input("Unesite brojilo: "))
+        if brojilo <= 0:
+            raise NevalidanUnos
         
-            ulica = input("Unesite ulicu: ")
-            
-            if ulica.isdigit():
-                raise NevalidanUnos("Ulica mora biti string.")
-            if type(ulica) != str:
-                raise NevalidanUnos("Ulica mora biti string.")
-            
-            rezultat = izvestaj_ulica(ulica, baza)
-            if len(rezultat) == 0:
-                raise NevalidanUnos("Ulica ne postoji.")
-            izvestaj_ispis(rezultat)
-            rezultat.clear()
-            return
-        elif odgovor == 2:
-            brojilo = int(input("Unesite brojilo: "))
-            rezultat = izvestaj_brojilo(brojilo, baza)
-            if len(rezultat) == 0:
-                raise NevalidanUnos("Brojilo ne postoji.")
-            izvestaj_ispis(rezultat)
-            rezultat.clear()
-            return
+        return brojilo
+
     except NevalidanUnos as poruka:
         print(poruka)
         return None
     except Exception:
         print("ID brojila mora biti broj.")
         return None
+    
+def izvestaj(odgovor, baza):
+    
+    rezultat = list()
+
+    try:
+        if odgovor == 1:
+                
+            ulica = unos_ulica()
+            if ulica == None:
+                return None
+
+            rezultat = izvestaj_ulica(ulica, baza)
+            if len(rezultat) == 0:
+                raise NevalidanUnos("Ulica ne postoji.")
+            izvestaj_ispis(rezultat)
+            rezultat.clear()
+                        
+        elif odgovor == 2:
+                    
+            brojilo = unos_brojilo()
+            if brojilo == None:
+                return None
+            
+            rezultat = izvestaj_brojilo(brojilo, baza)
+            if len(rezultat) == 0:
+                raise NevalidanUnos("Brojilo ne postoji.")
+            izvestaj_ispis(rezultat)
+            rezultat.clear()
+    except NevalidanUnos as e:
+        print(e)
         
+def main(baza, odgovor):
         
-def main():
+    if odgovor == None:
+        return None
+    elif odgovor == 3:
+        return "EXIT"
+
+    if izvestaj(odgovor, baza) == None:
+        return None
+
+if __name__ == "__main__":
     baza = database_functions.konekcija()
     
     while True:
-        print("Meni\n1 - Izvestaj mesecne postrosnje za ulicu\n2 - Izvestaj mesecne potrosnje za brojilo\n3 - Izlaz")
-        rezultat = list()
-        
-        odgovor = meni(input())
-        
-        if odgovor == None:
-            continue
-        elif odgovor == 3:
+        odgovor = meni()
+        if main(baza, odgovor) == "EXIT":
             break
-
-        odgovor_izvestaja = izvestaj(odgovor, baza)
-        
-        if odgovor_izvestaja == None:
-            continue
-        
-if __name__ == "__main__":
-    main()
