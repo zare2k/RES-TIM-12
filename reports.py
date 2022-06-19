@@ -43,12 +43,14 @@ def izvestaj_ispis(rezultat):
     
     if rezultat == None:
         print("Ne postoji trazeni izvestaj.")
+        return "ERROR"
     else:
         head = ["Mesec", "Potrosnja"]
         for red in rezultat:
             redovi.append([red[2], red[1]])
                 
         print(tabulate(redovi, headers=head, tablefmt="grid"))
+        return "OK"
         
 def meni():
     print("Meni\n1 - Izvestaj mesecne postrosnje za ulicu\n2 - Izvestaj mesecne potrosnje za brojilo\n3 - Izlaz")
@@ -95,8 +97,10 @@ def unos_brojilo():
         print("ID brojila mora biti broj.")
         return None
     
-def izvestaj(odgovor, baza):
+def duzina_liste(rezultat):
+    return len(rezultat)
     
+def izvestaj(odgovor, baza):
     rezultat = list()
 
     try:
@@ -107,11 +111,11 @@ def izvestaj(odgovor, baza):
                 return None
 
             rezultat = izvestaj_ulica(ulica, baza)
-            if len(rezultat) == 0:
+            if duzina_liste(rezultat) == 0:
                 raise NevalidanUnos("Ulica ne postoji.")
             izvestaj_ispis(rezultat)
-            rezultat.clear()
-                        
+            return "OK"
+        
         elif odgovor == 2:
                     
             brojilo = unos_brojilo()
@@ -119,10 +123,11 @@ def izvestaj(odgovor, baza):
                 return None
             
             rezultat = izvestaj_brojilo(brojilo, baza)
-            if len(rezultat) == 0:
+            if duzina_liste(rezultat) == 0:
                 raise NevalidanUnos("Brojilo ne postoji.")
             izvestaj_ispis(rezultat)
-            rezultat.clear()
+            return "OK"
+
     except NevalidanUnos as e:
         print(e)
         
