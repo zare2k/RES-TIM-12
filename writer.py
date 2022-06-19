@@ -18,7 +18,8 @@ def konekcija():
         return klijent
     except socket.error:
         print("Greska u konekciji sa replikatorom.")
-        exit()
+        klijent.close()
+        return None
 
 def slanje(klijent, id, potrosnja):
     try:
@@ -27,18 +28,20 @@ def slanje(klijent, id, potrosnja):
     except socket.error:
         print("Neuspesno slanje podataka.")
         klijent.close()
-        exit()
+        return "ERROR"
 
 def slanje_exit(klijent, poruka_gasenja):
     try:
         podaci = pickle.dumps(poruka_gasenja)
         klijent.send(podaci)
     except socket.error:
-        print("Neuspesno gasenje servera.")
+        print("Neuspesno slanje podataka.")
         klijent.close()
     
-def meni(odgovor):
+def meni():
     
+    print("Meni: \n1 - Unos potrosnje vode\n2 - Izlaz")
+    odgovor = input()
     try:
         odgovor = int(odgovor)
         if odgovor <= 0 or odgovor > 2:
@@ -52,13 +55,15 @@ def meni(odgovor):
         print("Unesite broj.")
         return None
     
-def unos(odgovor):
+def unos_id_brojila():
+    print("Unesite ID brojila: ")
+    id_brojila = input()
     try:
-        odgovor = int(odgovor)
-        if odgovor <= 0 or odgovor == None:
+        id_brojila = int(id_brojila)
+        if id_brojila <= 0 or id_brojila == None:
             raise NevalidanUnos()
         
-        return odgovor
+        return id_brojila
     except NevalidanUnos as e:
         print(e)
         return None
@@ -66,33 +71,49 @@ def unos(odgovor):
         print("Unesite broj.")
         return None
     
-def main():
-
-    klijent = konekcija()
+def unos_potrosnja():
+    print("Unesite potrosnju vode: ")
+    id_brojila = input()
+    try:
+        id_brojila = int(id_brojila)
+        if id_brojila <= 0 or id_brojila == None:
+            raise NevalidanUnos()
         
-    while True:
-        print("Meni: \n1 - Unos potrosnje vode\n2 - Izlaz")
+        return id_brojila
+    except NevalidanUnos as e:
+        print(e)
+        return None
+    except Exception:
+        print("Unesite broj.")
+        return None
+    
+def main(klijent, odgovor):
+            
+    if odgovor == None:
+        return None
+    if odgovor == 1:
+        id = unos_id_brojila()
+        if id == None:
+            return None
         
-        odgovor = meni(input())
+        potrosnja = unos_potrosnja()
+        if potrosnja == None:
+            return None
+        
+        if slanje(klijent, id, potrosnja) == "ERROR": 
+            return None
             
-        if odgovor == None:
-            continue
-        if odgovor == 1:
-            print("Unesite ID brojila: ")
-            id = unos(input())
-            if id == None:
-                continue
-            print("Unesite potrosnju vode: ")
-            potrosnja = unos(input())
-            if potrosnja == None:
-                continue
-            slanje(klijent, id, potrosnja)
-            
-        elif odgovor == 2:
-            slanje_exit(klijent, "EXIT")
-            break
+        return "OK"
+    elif odgovor == 2:
+        slanje_exit(klijent, "EXIT")
+        return "EXIT"
             
 if __name__ == "__main__":
-    main()
-
-
+    klijent = konekcija()
+    
+    while True:
+        odgovor = meni()
+        if main(klijent, odgovor) == "EXIT":
+            break
+    
+    klijent.close()
